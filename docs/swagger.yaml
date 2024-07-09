@@ -1,0 +1,155 @@
+definitions:
+  models.Task:
+    properties:
+      activeAt:
+        type: string
+      done:
+        type: boolean
+      id:
+        type: string
+      title:
+        maxLength: 200
+        type: string
+    required:
+    - activeAt
+    - title
+    type: object
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a simple Todo List API.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Todo List API
+  version: "1.0"
+paths:
+  /api/todo-list/tasks:
+    get:
+      description: Get tasks by their status (active or done)
+      parameters:
+      - default: active
+        description: Task status
+        enum:
+        - active
+        - done
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Task'
+            type: array
+      summary: Get tasks by status
+      tags:
+      - tasks
+    post:
+      consumes:
+      - application/json
+      description: Create a new task with the given title and active date
+      parameters:
+      - description: Task to create
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/models.Task'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+        "404":
+          description: Task already exists
+          schema:
+            type: string
+      summary: Create a new task
+      tags:
+      - tasks
+  /api/todo-list/tasks/{id}:
+    delete:
+      description: Delete a task by ID
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Task not found
+          schema:
+            type: string
+      summary: Delete a task
+      tags:
+      - tasks
+    put:
+      consumes:
+      - application/json
+      description: Update an existing task by ID
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated task data
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/models.Task'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+        "404":
+          description: Task not found
+          schema:
+            type: string
+      summary: Update an existing task
+      tags:
+      - tasks
+  /api/todo-list/tasks/{id}/done:
+    put:
+      description: Mark a task as done by ID
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Task not found
+          schema:
+            type: string
+      summary: Mark a task as done
+      tags:
+      - tasks
+swagger: "2.0"
